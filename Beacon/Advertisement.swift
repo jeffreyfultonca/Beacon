@@ -1,4 +1,5 @@
 import CoreLocation
+import CoreBluetooth
 
 // MARK: - Advertisement
     
@@ -7,9 +8,21 @@ struct Advertisement {
     // MARK: - Stored Properties
     
     let proximityUUID: UUID
-    let major:  CLBeaconMajorValue
+    let major: CLBeaconMajorValue
     let minor: CLBeaconMinorValue
     let power: Int8
+    
+    init(
+        proximityUUID: UUID?,
+        major: CLBeaconMajorValue?,
+        minor: CLBeaconMinorValue?,
+        power: Int8?)
+    {
+        self.proximityUUID = proximityUUID ?? UUID()
+        self.major = major ?? 0
+        self.minor = minor ?? 0
+        self.power = power ?? -59
+    }
     
     // MARK: - Computed Properties
     

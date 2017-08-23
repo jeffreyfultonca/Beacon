@@ -30,23 +30,23 @@ final class AdvertiseViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loadPreviousAdvertisement()
+        updateUIForSavedAdvertisementValues()
     }
     
     // MARK: - Load/Save
     
-    private func loadPreviousAdvertisement() {
+    private func updateUIForSavedAdvertisementValues() {
         uuidTextField.stringValue = persistenceService.uuid
         majorTextField.stringValue = persistenceService.major
         minorTextField.stringValue = persistenceService.minor
         powerTextField.stringValue = persistenceService.power
     }
     
-    private func saveAdvertisement() {
-        persistenceService.uuid = uuidTextField.stringValue
-        persistenceService.major = majorTextField.stringValue
-        persistenceService.minor = minorTextField.stringValue
-        persistenceService.power = powerTextField.stringValue
+    private func save(advertisement: Advertisement) {
+        persistenceService.uuid = advertisement.proximityUUID.uuidString
+        persistenceService.major = advertisement.major.description
+        persistenceService.minor = advertisement.minor.description
+        persistenceService.power = advertisement.power.description
     }
     
     // MARK: - Actions
@@ -55,7 +55,6 @@ final class AdvertiseViewController: NSViewController {
         if isAdvertising {
             stopAdvertising()
         } else {
-            saveAdvertisement()
             startAdvertising()
         }
     }
@@ -71,10 +70,14 @@ final class AdvertiseViewController: NSViewController {
         
         let advertisement = Advertisement(
             proximityUUID: proximityUUID,
-            major: UInt16(majorTextField.integerValue),
-            minor: UInt16(minorTextField.integerValue),
-            power: Int8(powerTextField.integerValue)
+            major: UInt16(majorTextField.stringValue),
+            minor: UInt16(minorTextField.stringValue),
+            power: Int8(powerTextField.stringValue)
         )
+        
+        save(advertisement: advertisement)
+        updateUIForSavedAdvertisementValues()
+        
         self.transmitter = Transmitter(
             delegate: self,
             advertisement: advertisement
